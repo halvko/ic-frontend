@@ -8,7 +8,7 @@ import { NavigationRoute, registerRoute } from 'workbox-routing';
 
 declare let self: ServiceWorkerGlobalScope;
 
-self.addEventListener('message', event => {
+self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
@@ -25,5 +25,5 @@ if (import.meta.env.DEV) allowlist = [/^\/$/];
 
 // to allow work offline
 registerRoute(
-  new NavigationRoute(createHandlerBoundToURL('index.html'), { allowlist })
+  new NavigationRoute(createHandlerBoundToURL('index.html'), { allowlist }),
 );

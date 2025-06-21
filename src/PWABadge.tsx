@@ -18,7 +18,7 @@ const PWABadge: Component = () => {
       if (r?.active?.state === 'activated') {
         registerPeriodicSync(period, swUrl, r);
       } else if (r?.installing) {
-        r.installing.addEventListener('statechange', e => {
+        r.installing.addEventListener('statechange', (e) => {
           const sw = e.target as ServiceWorker;
           if (sw.state === 'activated') registerPeriodicSync(period, swUrl, r);
         });
@@ -76,7 +76,7 @@ export default PWABadge;
 function registerPeriodicSync(
   period: number,
   swUrl: string,
-  r: ServiceWorkerRegistration
+  r: ServiceWorkerRegistration,
 ) {
   if (period <= 0) return;
 

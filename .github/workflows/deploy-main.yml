@@ -27,7 +27,7 @@ jobs:
 
       - name: Build project
         env:
-          VITE_BASE_PATH: '/main/'
+          VITE_BASE_PATH: '/${{ vars.S3_BUCKET_NAME }}/main/'
         run: |
           npm run build
 
@@ -49,5 +49,5 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Branch:** main" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-          echo "**URL:** https://${{ vars.S3_BUCKET_NAME }}.s3.${{ vars.AWS_REGION }}.amazonaws.com/main/index.html" >> $GITHUB_STEP_SUMMARY
+          echo "**URL:** https://s3.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.S3_BUCKET_NAME }}/main/index.html" >> $GITHUB_STEP_SUMMARY
           echo "**Deployed at:** $(date)" >> $GITHUB_STEP_SUMMARY

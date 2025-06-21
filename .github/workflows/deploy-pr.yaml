@@ -30,7 +30,7 @@ jobs:
 
       - name: Build project
         env:
-          VITE_BASE_PATH: '/pr-${{ github.event.number }}/'
+          VITE_BASE_PATH: '/${{ vars.S3_BUCKET_NAME }}/pr-${{ github.event.number }}/'
         run: |
           npm run build
 
@@ -56,7 +56,7 @@ jobs:
             const prNumber = context.payload.number;
             const bucketName = '${{ vars.S3_BUCKET_NAME }}';
             const region = '${{ vars.AWS_REGION }}';
-            const deploymentUrl = `https://${bucketName}.s3.${region}.amazonaws.com/pr-${prNumber}/index.html`;
+            const deploymentUrl = `https://s3.${region}.amazonaws.com/${bucketName}/pr-${prNumber}/index.html`;
 
             // Find existing comment
             const comments = await github.rest.issues.listComments({

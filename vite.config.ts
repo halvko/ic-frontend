@@ -4,6 +4,7 @@ import solid from 'vite-plugin-solid';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: process.env.VITE_BASE_PATH || '/',
   plugins: [
     solid(),
     VitePWA({
@@ -12,6 +13,7 @@ export default defineConfig({
       filename: 'sw.ts',
       registerType: 'prompt',
       injectRegister: false,
+      base: process.env.VITE_BASE_PATH || '/',
 
       pwaAssets: {
         disabled: false,
@@ -23,6 +25,8 @@ export default defineConfig({
         short_name: 'ic-frontend',
         description: 'Graph based task manager',
         theme_color: '#333333',
+        start_url: process.env.VITE_BASE_PATH || '/',
+        scope: process.env.VITE_BASE_PATH || '/',
       },
 
       injectManifest: {

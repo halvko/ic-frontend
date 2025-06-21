@@ -1,0 +1,97 @@
+name: Deploy to S3 on PR
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Build project
+        env:
+          VITE_BASE_PATH: '/pr-${{ github.event.number }}/'
+        run: |
+          npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          role-session-name: GitHubActions-PR-${{ github.event.number }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Deploy to S3
+        run: |
+          # Create a unique folder name using PR number
+          PR_FOLDER="pr-${{ github.event.number }}"
+
+          # Sync the dist folder to S3 with the PR-specific prefix
+          aws s3 sync dist/ s3://${{ vars.S3_BUCKET_NAME }}/$PR_FOLDER/ --delete
+
+      - name: Comment PR with deployment URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.number;
+            const bucketName = '${{ vars.S3_BUCKET_NAME }}';
+            const region = '${{ vars.AWS_REGION }}';
+            const deploymentUrl = `https://${bucketName}.s3.${region}.amazonaws.com/pr-${prNumber}/index.html`;
+
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const botComment = comments.data.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('🚀 **PR Deployment**')
+            );
+
+            const commentBody = `🚀 **PR Deployment**
+
+            Your changes have been deployed!
+
+            **Preview URL:** ${deploymentUrl}
+
+            This deployment will be automatically cleaned up when the PR is closed.`;
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: commentBody
+              });
+            }

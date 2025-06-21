@@ -65,18 +65,17 @@ jobs:
               issue_number: prNumber,
             });
 
-            const botComment = comments.data.find(comment =>
-              comment.user.type === 'Bot' &&
-              comment.body.includes('🚀 **PR Deployment**')
+            const botComment = comments.data.find(
+              (comment) =>
+                comment.user.type === 'Bot' &&
+                comment.body.includes('🚀 **PR Deployment**'),
             );
 
-            const commentBody = `🚀 **PR Deployment**
-
-            Your changes have been deployed!
-
-            **Preview URL:** ${deploymentUrl}
-
-            This deployment will be automatically cleaned up when the PR is closed.`;
+            const commentBody =
+              `🚀 **PR Deployment**\n\n` +
+              `Your changes have been deployed!\n\n` +
+              `**Preview URL:** ${deploymentUrl}\n\n` +
+              `This deployment will be automatically cleaned up when the PR is closed.`;
 
             if (botComment) {
               // Update existing comment
@@ -84,7 +83,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
-                body: commentBody
+                body: commentBody,
               });
             } else {
               // Create new comment
@@ -92,6 +91,6 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
-                body: commentBody
+                body: commentBody,
               });
             }

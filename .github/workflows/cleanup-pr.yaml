@@ -41,25 +41,24 @@ jobs:
                 issue_number: prNumber,
               });
 
-              const botComment = comments.data.find(comment =>
-                comment.user.type === 'Bot' &&
-                comment.body.includes('🚀 **PR Deployment**')
+              const botComment = comments.data.find(
+                (comment) =>
+                  comment.user.type === 'Bot' &&
+                  comment.body.includes('🚀 **PR Deployment**'),
               );
 
               if (botComment) {
-                const commentBody = `🚀 **PR Deployment**
-
-                ~~Your changes were deployed and are now cleaned up.~~
-
-                **Status:** ✅ Deployment cleaned up after PR closure.
-
-                _This comment was automatically updated._`;
+                const commentBody =
+                  `🚀 **PR Deployment**\n\n` +
+                  `~~Your changes were deployed and are now cleaned up.~~\n\n` +
+                  `**Status:** ✅ Deployment cleaned up after PR closure.\n\n` +
+                  `_This comment was automatically updated._`;
 
                 await github.rest.issues.updateComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   comment_id: botComment.id,
-                  body: commentBody
+                  body: commentBody,
                 });
 
                 console.log('Updated deployment comment for PR #' + prNumber);

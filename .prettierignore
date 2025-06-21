@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+out/
+
+# Generated files
+*.min.js
+*.min.css
+
+# PWA generated files
+public/manifest.json
+public/sw.js
+public/workbox-*.js
+
+# Config files that shouldn't be formatted
+.env*
+*.log
+
+# IDE files
+.vscode/
+.idea/
+.zed/
+
+# OS files
+.DS_Store
+Thumbs.db

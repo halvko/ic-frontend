@@ -1,11 +1,11 @@
-import { createSignal } from 'solid-js'
-import solidLogo from './assets/solid.svg'
-import appLogo from '/favicon.svg'
-import PWABadge from './PWABadge.tsx'
-import './App.css'
+import { createSignal } from 'solid-js';
+import solidLogo from './assets/solid.svg';
+import appLogo from '/favicon.svg';
+import PWABadge from './PWABadge.tsx';
+import './App.css';
 
 function App() {
-  const [count, setCount] = createSignal(0)
+  const [count, setCount] = createSignal(0);
 
   return (
     <>
@@ -19,7 +19,7 @@ function App() {
       </div>
       <h1>ic-frontend</h1>
       <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={() => setCount(count => count + 1)}>
           count is {count()}
         </button>
         <p>
@@ -31,7 +31,7 @@ function App() {
       </p>
       <PWABadge />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,11 +1,13 @@
 import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vite';
 import solid from 'vite-plugin-solid';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: process.env.VITE_BASE_PATH || '/',
   plugins: [
+    tailwindcss(),
     solid(),
     VitePWA({
       strategies: 'injectManifest',

@@ -1,48 +1,71 @@
-import { createSignal } from 'solid-js';
-import solidLogo from './assets/solid.svg';
-import appLogo from '/favicon.svg';
-import PWABadge from './PWABadge.tsx';
+import { createSignal, Show } from 'solid-js';
+import { TaskProvider } from './TaskProvider';
+import MainApp from './MainApp';
+import DemoPage from './components/DemoPage';
+import PWABadge from './PWABadge';
 
 function App() {
-  const [count, setCount] = createSignal(0);
+  const [currentView, setCurrentView] = createSignal<'app' | 'demo'>('demo');
 
   return (
-    <>
-      <div class="max-w-[1280px] mx-auto py-8 px-8 text-center">
-        <div class="flex justify-center gap-8 mb-8">
-          <a href="https://vite.dev" target="_blank" class="inline-block">
-            <img
-              src={appLogo}
-              class="h-32 p-6 transition-[filter] duration-300 hover:drop-shadow-[0_0_2em_#646cffaa]"
-              alt="ic-frontend logo"
-            />
-          </a>
-          <a href="https://solidjs.com" target="_blank" class="inline-block">
-            <img
-              src={solidLogo}
-              class="h-32 p-6 transition-[filter] duration-300 hover:drop-shadow-[0_0_2em_#61dafbaa]"
-              alt="Solid logo"
-            />
-          </a>
-        </div>
-        <h1 class="text-[3.2em] leading-[1.1] mb-8">ic-frontend</h1>
-        <div class="p-8">
-          <button
-            onClick={() => setCount((count) => count + 1)}
-            class="rounded-lg border border-transparent px-5 py-3 text-base font-medium cursor-pointer transition-colors duration-[250ms] hover:border-[#646cff] focus:outline-4"
-          >
-            count is {count()}
-          </button>
-          <p class="mt-4">
-            Edit <code>src/App.tsx</code> and save to test HMR
-          </p>
-        </div>
-        <p class="text-[#888]">
-          Click on the Vite and Solid logos to learn more
-        </p>
+    <TaskProvider syncEnabled={false}>
+      <div class="min-h-screen bg-gray-50">
+        {/* Navigation */}
+        <nav class="bg-white shadow-sm border-b">
+          <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+              <div class="flex items-center gap-8">
+                <h1 class="text-xl font-bold text-gray-900">Task Manager</h1>
+                <div class="flex gap-4">
+                  <button
+                    onClick={() => setCurrentView('demo')}
+                    class={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                      currentView() === 'demo'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Demo
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('app')}
+                    class={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                      currentView() === 'app'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    App
+                  </button>
+                </div>
+              </div>
+
+              {/* Status indicator */}
+              <div class="flex items-center gap-4 text-sm text-gray-600">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span>Online</span>
+                </div>
+                <div class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+                  MVP Demo
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        {/* Main Content */}
+        <Show when={currentView() === 'demo'}>
+          <DemoPage />
+        </Show>
+
+        <Show when={currentView() === 'app'}>
+          <MainApp />
+        </Show>
+
         <PWABadge />
       </div>
-    </>
+    </TaskProvider>
   );
 }
 
